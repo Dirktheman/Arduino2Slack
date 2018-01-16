@@ -23,16 +23,16 @@
 
 
 /*************************** WiFi gegevens ***********************************/
-char SSID[] = "deGasperisingel33";
-char pwd[] = "JGWEDEPR";
+char SSID[] = "Your SSID";
+char pwd[] = "Your Wifi Password";
 
 
 
 /************************* Slack configuratie **********************************/
-const String slack_hook_url = "https://hooks.slack.com/services/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";
-const String slack_icon_url = "http://www.rmmbr.com/wp-content/uploads/2018/01/rmmbrbtn.png";
-const String slack_message = "Ayayay caramba, we hebben een DEAL!";
-const String slack_username = "RMMBRbutton";
+const String slack_hook_url = "Your Slack incoming webhook URL";
+const String slack_icon_url = "A nice icon (jpg/png) for your notification";
+const String slack_message = "Your awesome message here";
+const String slack_username = "Username of your custom integration here";
 
 
 
