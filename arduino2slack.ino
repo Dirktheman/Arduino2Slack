@@ -1,17 +1,17 @@
 /*
-  Gebruik een knop om realtime een slack-bericht te versturen
+  Create a physical button to send a realtime Slack notification
   Copryright 2018 Dirk de Man (Twitter: @dirktheman)
-  Gebruik onder MIT license
+  Use under MIT license
 
-  INSTRUCTIES
-  - Maak in Slack via Manage - Custom Integrations - Incoming Webhooks een nieuwe Incoming Webhook aan
-  - Kies het kanaal waarin je wilt posten, een naam en eventueel een icoon
-  - Sla op en noteer de Webhook URL
-
-  - In de code hieronder vul je onder 'Wifi gegevens' de SSID en het wachtwoord van je wifi in
-  - Bij de Slack configuratie vul je je webhook URL, eventueel een link naar een icoontje, de tekst en de gebruikersnaam van de custom integration in die je zojuist hebt gemaakt
-
-  - Ten slotte sluit je je knop aan op de A0-pin van je NodeMCU en upload je de code
+  INSTRUCTIONS
+  - Create a new Incoming Webhook in Slack: Manage - Custom Integrations - Incoming Webhooks
+  - Choose the Slack channel where you want to post your message in
+  - Save and copy the webhook URL
+  
+  - Fill in your Wifi SSID (network name) and password in the Arduino code 
+  - Fill in your webhook URL, a link to a nice icon, your text and the username of your custom integration
+  
+  - Wire your button to the analog pin of your NodeMCU (A0) and upload the code
 */
 
 
@@ -22,21 +22,21 @@
 
 
 
-/*************************** WiFi gegevens ***********************************/
+/*************************** WiFi credentials ***********************************/
 char SSID[] = "Your SSID";
 char pwd[] = "Your Wifi Password";
 
 
 
-/************************* Slack configuratie **********************************/
+/************************* Slack configuration **********************************/
 const String slack_hook_url = "Your Slack incoming webhook URL";
 const String slack_icon_url = "A nice icon (jpg/png) for your notification";
-const String slack_message = "Your awesome message here";
+const String slack_message = "Your awesome message here!";
 const String slack_username = "Username of your custom integration here";
 
 
 
-/****************************** Knop ******************************************/
+/****************************** Button ******************************************/
 #define Buttons       A0  // analog 0
 
 int ButtonRead = 0;
@@ -53,7 +53,7 @@ void setup()
 
   WiFi.begin(SSID, pwd);
 
-  Serial.print("Verbinding maken...");
+  Serial.print("Connecting to wifi...");
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
@@ -61,7 +61,7 @@ void setup()
   }
   Serial.println();
 
-  Serial.print("Verbonden met IP-adres ");
+  Serial.print("Connected to IP address ");
   Serial.println(WiFi.localIP());
 }
 
@@ -70,18 +70,18 @@ void setup()
 bool postMessageToSlack(String msg)
 {
   const char* host = "hooks.slack.com";
-  Serial.print("Verbinding maken met ");
+  Serial.print("Connecting to ");
   Serial.println(host);
 
-  //Gebruik WiFiClient class om een TCP-verbinding te maken
+  //Use WiFiClient class to set up a TCP-connection
   WiFiClientSecure client;
   const int httpsPort = 443;
   if (!client.connect(host, httpsPort)) {
-    Serial.println("Verbinding maken mislukt :-(");
+    Serial.println("Failed to connect :-(");
     return false;
   }
 
-  //Verbinding? Dan kunnen we een POST-request naar de Slack-API maken!
+  //Was your connection successful? Great! Than we can make a POST-request to the Slack API!
   Serial.print("Posting to URL: ");
   Serial.println(slack_hook_url);
 
@@ -108,7 +108,9 @@ bool postMessageToSlack(String msg)
 void loop()
 
 {
-  //Knopwaarde uitlezen en een kleine vertraging om bouncebacks uit te sluiten
+  //Read button value, when between 200 and 1000 make API call to Slack.
+  //Also: a small delay after the readout will mitigate button bounceback
+  //A larger delay after the POST request will deal with those pesky people that double-click a button, thus sending the request twice
   ButtonRead = analogRead(Buttons);
   delay(100);
     
